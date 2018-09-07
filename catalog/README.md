@@ -1,6 +1,6 @@
 # Vegan Shopping List
 
-An application that allows registered users to add, edit and delete vegan items within a variety of vegan alternative categories.
+This application allows registered users to add, edit and delete vegan items within a variety of vegan alternative categories.
 
 The application can be access via http://localhost:8000 with the following pages:
 * Home Page: /
@@ -21,6 +21,11 @@ The application can be access via http://localhost:8000 with the following pages
     * Retrieves all the vegan items grouped by category
 
 This application is written in Python using Flask web framework, a third-party OAuth 2.0 authentication & authorization service (like Google Accounts and Facebook Accounts), and SQLAlchemy SQL toolkit to manage the following database tables:
+
+First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
 
 Table "user"
 | Column  |           Type           |                       Modifiers                      
@@ -79,15 +84,27 @@ This will give you a directory named **vegan_shopping_list** complete with the s
 
 ## Run the virtual machine!
 
-Using the terminal, change directory to vegan_shopping_list (**cd vegan_shopping_list**), then type **vagrant up** to launch your virtual machine.
+Using the terminal, change directory to vegan_shopping_list (**cd vegan_shopping_list**), then type **vagrant up** to launch your virtual machine:
+
+    > cd /vegan_shopping_list
+    > vagrant up
 
 ## Running the Vegan Shopping List App
 Once it is up and running, type **vagrant ssh**. This will log your terminal into the virtual machine, and you'll get a Linux shell prompt. When you want to log out, type **exit** at the shell prompt.  To turn the virtual machine off (without deleting anything), type **vagrant halt**. If you do this, you'll need to run **vagrant up** again before you can log into it.
 
 Now that you have Vagrant up and running type **vagrant ssh** to log into your VM.  Change to the /vegan_shopping_list directory by typing **cd /vegan_shopping_list**. This will take you to the shared folder between your virtual machine and host machine. Change to the /catalog directory by typing **cd /catalog**. This will take you to the application folder.
 
+    > vagrant ssh
+    > cd /vegan_shopping_list
+    > cd /catalog
+    
 Type **ls** to ensure that you are inside the directory that contains application.py, models.py, lots_vegan_items.py, oauthUtils.py, fb_client_secrets.json, google_client_secrets.json and two directories named 'templates' and 'static'.
 
+    > ls
+    > python models.py
+    > python lots_vegan_items.py
+    > python application.py
+    
 1. Now type **python models.py** to initialize the database.
 2. Type **python lots_vegan_items.py** to populate the database with vegan alternative categories and items.
 3. Type **python application.py** to run the Flask web server.
@@ -97,7 +114,11 @@ You should be able to view vegan alternative categories and items. After logging
 
 ## Built With
 
-* [Python](https://docs.python.org/2/index.html) - The programming used
+* [Python 2.7.12](https://docs.python.org/2/index.html) - The programming used
+
+## Tested With
+
+* Google Chrome Version 68.0.3440.106 (Official Build) (64-bit)
 
 ## Contributing
 
