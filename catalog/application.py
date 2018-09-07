@@ -28,8 +28,8 @@ app.jinja_env.globals.update(gen_state_token=gen_state_token)
 # Connect to Database and create database session
 engine = create_engine('sqlite:///catalogWithOAuth.db')
 Base.metadata.bind = engine
-session = scoped_session(sessionmaker(bind=engine))
-Categories = session.query(Category).order_by(asc(Category.name))
+db_session = scoped_session(sessionmaker(bind=engine))
+Categories = db_session.query(Category).order_by(asc(Category.name))
 
 
 # Registered a logged in user in the database.
@@ -50,7 +50,7 @@ def registerUser():
 # Retrieve user id by email
 def getUserID(email):
     try:
-        user = session.query(User).filter_by(email=email).one()
+        user = db_session.query(User).filter_by(email=email).one()
         return user.id
     except NoResultFound:
         return None
@@ -59,7 +59,7 @@ def getUserID(email):
 # Retrieve user info by id
 def getUserInfo(user_id):
     try:
-        user = session.query(User).filter_by(id=user_id).one()
+        user = db_session.query(User).filter_by(id=user_id).one()
         return user
     except NoResultFound:
         return None
@@ -71,10 +71,14 @@ def createUser():
         name=login_session['username'],
         email=login_session['email'],
         picture=login_session['picture'])
-    session.add(newUser)
-    session.commit()
-    user = session.query(User).filter_by(email=login_session['email']).one()
-    return user.id
+    db_session.add(newUser)
+    db_session.commit()
+    try:
+        user = db_session.query(User).filter_by(
+            email=login_session['email']).one()
+        return user.id
+    except NoResultFound:
+        return None
 
 
 # Returns all category items in JSON format.
@@ -83,9 +87,9 @@ def getCatalogJSON():
        return it as a single json object.'''
     categoriesJSON = []
 
-    categories = session.query(Category).all()
+    categories = db_session.query(Category).all()
     for category in categories:
-        items = session.query(Item).filter_by(cat_id=category.id).all()
+        items = db_session.query(Item).filter_by(cat_id=category.id).all()
         categoryJSON = category.serialize
         categoryJSON['Item'] = [item.serialize for item in items]
         categoriesJSON.append(categoryJSON)
@@ -95,7 +99,7 @@ def getCatalogJSON():
 
 @app.teardown_request
 def remove_session(ex=None):
-    session.remove()
+    db_session.remove()
 
 
 # Login with Google oauth api
@@ -127,6 +131,13 @@ def showLogout():
     return redirect(url_for('showCategories'))
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template(
+        'error.html',
+        errormsg="404 What you were looking for is just not there."), 404
+
+
 # Show error page
 @app.route('/error')
 def showError():
@@ -139,8 +150,8 @@ def showError():
 # Show home page: categories | latest items
 @app.route('/')
 def showCategories():
-    Categories = session.query(Category).order_by(asc(Category.name))
-    latestItems = session.query(Item).order_by(
+    Categories = db_session.query(Category).order_by(asc(Category.name))
+    latestItems = db_session.query(Item).order_by(
         asc(Item.created_date)).limit(Categories.count())
     return render_template(
         'catalog.html',
@@ -155,14 +166,16 @@ def showCategories():
 def showCategoryItems(category_name):
     category_id = request.args.get('category_id')
     if category_id is None:
-        return render_template(
-            'error.html',
-            errormsg="Oops... Category is not found")
+        return page_not_found(None)
 
-    items = session.query(Item).filter_by(
+    items = db_session.query(Item).filter_by(
         cat_id=category_id).order_by(asc(Item.title)).all()
-    selectedCategory = session.query(Category).filter_by(id=category_id).one()
-    
+    try:
+        selectedCategory = db_session.query(Category).filter_by(
+            id=category_id).one()
+    except NoResultFound:
+        return page_not_found(None)
+
     return render_template(
         'catalog.html',
         leftPanel='category/categorylist.html',
@@ -177,17 +190,14 @@ def showCategoryItems(category_name):
 def showCategoryItem(category_name, item_title):
     item_id = request.args.get('item_id')
     if item_id is None:
-        return render_template(
-            'error.html',
-            errormsg="Oops... Item is not found")
+        return page_not_found(None)
 
-    selectedCategoryItem = session.query(Item).filter_by(id=item_id).one()
-    if selectedCategoryItem is None:
-        return render_template(
-            'error.html',
-            errormsg="Oops... Item is not found")
+    try:
+        selectedCategoryItem = db_session.query(Item).filter_by(id=item_id).one()
+    except NoResultFound:
+        return page_not_found(None)
 
-    items = session.query(Item).filter_by(
+    items = db_session.query(Item).filter_by(
         cat_id=selectedCategoryItem.cat_id).order_by(asc(Item.title)).all()
     return render_template(
         'catalog.html',
@@ -213,8 +223,8 @@ def newCatalogItem():
                 description=bleach.clean(request.form['description']),
                 cat_id=request.form['category'],
                 user_id=login_session['user_id'])
-            session.add(newItem)
-            session.commit()
+            db_session.add(newItem)
+            db_session.commit()
             flash("{} as been successfully added to {}".format(
                 newItem.title, newItem.category.name))
             return redirect(url_for(
@@ -230,8 +240,12 @@ def newCatalogItem():
         # Show add category item page
         category_id = request.args.get('category_id')
         if category_id is not None:
-            selectedCategory = session.query(Category).filter_by(
-                id=category_id).one()
+            try:
+                selectedCategory = db_session.query(Category).filter_by(
+                    id=category_id).one()
+            except NoResultFound:
+                return page_not_found(None)
+
             return render_template(
                 'catalog.html',
                 leftPanel='category/categorylist.html',
@@ -255,24 +269,22 @@ def editCategoryItem(item_title):
 
     item_id = request.args.get('item_id')
     if item_id is None:
-        return render_template(
-            'error.html',
-            errormsg="Oops... Item is not found")
+        return page_not_found(None)
 
-    editCategoryItem = session.query(Item).filter_by(id=item_id).one()
-    if editCategoryItem is None:
-        return render_template(
-            'error.html',
-            errormsg="Oops... Item is not found")
+    try:
+        editCategoryItem = db_session.query(Item).filter_by(id=item_id).one()
+    except NoResultFound:
+        return page_not_found(None)
 
     if request.method == 'POST':
         # Update the category item.
         if request.form['title']:
             editCategoryItem.title = bleach.clean(request.form['title'])
         if request.form['description']:
-            editCategoryItem.description = bleach.clean(request.form['description'])
-        session.add(editCategoryItem)
-        session.commit()
+            editCategoryItem.description = bleach.clean(
+                request.form['description'])
+        db_session.add(editCategoryItem)
+        db_session.commit()
         flash("{} as been successfully updated in {}".format(
             editCategoryItem.title, editCategoryItem.category.name))
         return redirect(url_for(
@@ -282,7 +294,7 @@ def editCategoryItem(item_title):
             item_id=editCategoryItem.id))
     else:
         # Show edit category item page
-        items = session.query(Item).filter_by(
+        items = db_session.query(Item).filter_by(
             cat_id=editCategoryItem.cat_id).order_by(asc(Item.title)).all()
         return render_template(
             'catalog.html',
@@ -302,21 +314,18 @@ def deleteCategoryItem(item_title):
 
     item_id = request.args.get('item_id')
     if item_id is None:
-        return render_template(
-            'error.html',
-            errormsg="Oops... Item is not found")
+        return page_not_found(None)
 
-    deleteCategoryItem = session.query(Item).filter_by(id=item_id).one()
-    if deleteCategoryItem is None:
-        return render_template(
-            'error.html',
-            errormsg="Oops... Item is not found")
+    try:
+        deleteCategoryItem = db_session.query(Item).filter_by(id=item_id).one()
+    except NoResultFound:
+        return page_not_found(None)
 
     if request.method == 'POST':
         # Delete the category item
         category = deleteCategoryItem.category
-        session.delete(deleteCategoryItem)
-        session.commit()
+        db_session.delete(deleteCategoryItem)
+        db_session.commit()
         flash("{} as been successfully removed from {}".format(
             deleteCategoryItem.title, deleteCategoryItem.category.name))
         return redirect(url_for(
@@ -325,7 +334,7 @@ def deleteCategoryItem(item_title):
             category_id=category.id))
     else:
         # Show delete category item confirmation page
-        items = session.query(Item).filter_by(
+        items = db_session.query(Item).filter_by(
             cat_id=deleteCategoryItem.cat_id).order_by(asc(Item.title)).all()
         return render_template(
             'catalog.html',

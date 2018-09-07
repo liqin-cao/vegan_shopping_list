@@ -140,7 +140,9 @@ a {
 
 .loader {
 	margin: 15px;
-	align-self: center;
+	-ms-flex-item-align: center;
+	    -ms-grid-row-align: center;
+	    align-self: center;
 	border: 10px solid #f3f3f3;
 	border-radius: 50%;
 	border-top: 10px solid #42c3c9;
@@ -155,8 +157,8 @@ a {
 	100% { -webkit-transform: rotate(360deg); }
 }
 @keyframes spin {
-	0% { transform: rotate(0deg); }
-	100% { transform: rotate(360deg); }
+	0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+	100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
 }
   
 .banner {
@@ -213,9 +215,6 @@ a {
 	font-weight: 500;
 }
 
-.error {
-	margin-top: 20px;
-}
 .error img {
     display: block;
     margin-left: auto;
@@ -223,8 +222,12 @@ a {
 }
 
 .catalog {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	align-items: stretch;
+	-webkit-box-align: stretch;
+	    -ms-flex-align: stretch;
+	        align-items: stretch;
 	margin-bottom: 35px;
 }
 .catalog-title {
@@ -240,12 +243,14 @@ a {
 	margin-top: 10px;
 }
 .catalog-title .space-between {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	justify-content: space-between;
+	-webkit-box-pack: justify;
+	    -ms-flex-pack: justify;
+	        justify-content: space-between;
 }
 .catalog-title .btn-action {
-	-moz-border-radius:25px 25px 25px 0;
-	-webkit-border-radius:25px 25px 25px 0;
 	border-radius:25px 25px 25px 0;
 	color: #f0f0f0;
 	border: 2px solid #42c2c9;
@@ -369,26 +374,33 @@ a {
 	background: #4A4A4A;
 }
 .categoryitem-actions .btn-action.left {
-	-moz-border-radius:25px 0 0 25px;
-	-webkit-border-radius:25px 0 0 25px;
 	border-radius:25px 0 0 25px;
 }
 .categoryitem-actions .btn-action.right {
-	-moz-border-radius:0 25px 25px 0;
-	-webkit-border-radius:0 25px 25px 0;
 	border-radius:0 25px 25px 0;
 }
 
 .login-panel {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	justify-content: space-evenly;
-	flex-direction: column;
+	-webkit-box-pack: space-evenly;
+	    -ms-flex-pack: space-evenly;
+	        justify-content: space-evenly;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
 	margin: 20px;
 	padding: 20px;
 }
 .login-tile {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	align-items: center;
+	-webkit-box-align: center;
+	    -ms-flex-align: center;
+	        align-items: center;
 	margin: 10px;
 	border:2px solid #42c3c9;
 	border-radius: 25px;
@@ -403,7 +415,8 @@ a {
 	background: none;
 }
 .abcRioButton.abcRioButtonLightBlue {
-	box-shadow: none;
+	-webkit-box-shadow: none;
+	        box-shadow: none;
 }
 .login-btn-close {
 	color:#4A4A4A;

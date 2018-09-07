@@ -104,7 +104,7 @@ Type **ls** to ensure that you are inside the directory that contains applicatio
     > python application.py
     
 1. **python models.py** - initializes the database
-2. **python lots_vegan_items.py** - populates the database with vegan alternative categories and items (optional)
+2. **python lots_vegan_items.py** - populates the database with vegan alternative categories and some vegan items
 3. **python application.py** - runs the Flask web server
 4. In your browser visit **http://localhost:8000** to view the vegan shopping list app.
 
