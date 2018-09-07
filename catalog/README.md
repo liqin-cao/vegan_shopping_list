@@ -23,6 +23,7 @@ The application can be access via http://localhost:8000 with the following pages
 This application is written in Python using Flask web framework, a third-party OAuth 2.0 authentication & authorization service (like Google Accounts and Facebook Accounts), and SQLAlchemy SQL toolkit to manage the following database tables:
 
 Table **user**
+
 Column    | Type         | Modifiers                      
 --------- |------------- |----------------------------
 id        | Integer      | primary_key=True
@@ -31,12 +32,14 @@ email     | Sring(250)   | nullable=False
 picture   | Sring(250)   |
 
 Table **category**
+
 Column | Type      | Modifiers
 ------ |---------- |------------------------
 id     | Integer   | primary_key=True
 name   | Sring(80) | nullable=False, index=True
 
 Table **item**
+
 Column        |  Type       | Modifiers
 ------------- |------------ |----------------------------------
 id            | Integer     | primary_key=True
