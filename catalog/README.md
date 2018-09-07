@@ -22,35 +22,30 @@ The application can be access via http://localhost:8000 with the following pages
 
 This application is written in Python using Flask web framework, a third-party OAuth 2.0 authentication & authorization service (like Google Accounts and Facebook Accounts), and SQLAlchemy SQL toolkit to manage the following database tables:
 
-First Header  | Second Header
-------------- | -------------
-Content Cell  | Content Cell
-Content Cell  | Content Cell
+Table **user**
+Column    | Type         | Modifiers                      
+--------- |------------- |----------------------------
+id        | Integer      | primary_key=True
+name      | Sring(32)    | nullable=False, index=True
+email     | Sring(250)   | nullable=False
+picture   | Sring(250)   |
 
-Table "user"
-| Column  |           Type           |                       Modifiers                      
-|---------|--------------------------|------------------------------------------------------
-| id      | Integer                  | primary_key=True
-| name    | Sring(32)                | nullable=False, index=True
-| email   | Sring(250)               | nullable=False
-| picture | Sring(250)               |
+Table **category**
+Column | Type      | Modifiers
+------ |---------- |------------------------
+id     | Integer   | primary_key=True
+name   | Sring(80) | nullable=False, index=True
 
-Table "category"
-| Column |           Type           |                    Modifiers
-|--------|--------------------------|--------------------------------------------------
-| id     | Integer                  | primary_key=True
-| name   | Sring(80)                | nullable=False, index=True
-
-Table "item"
-| Column        |  Type         |                      Modifiers
-|---------------|---------------|------------------------------------------------------
-| id            | Integer       | primary_key=True
-| created_date  | DateTime      | default=datetime.datetime.utcnow
-| title         | String(80)    | nullable=False
-| description   | String(250)   | nullable=False
-| picture       | String(250)   |
-| cat_id        | Integer       | ForeignKey('category.id')
-| user_id       | Integer       | ForeignKey('user.id')
+Table **item**
+Column        |  Type       | Modifiers
+------------- |------------ |----------------------------------
+id            | Integer     | primary_key=True
+created_date  | DateTime    | default=datetime.datetime.utcnow
+title         | String(80)  | nullable=False
+description   | String(250) | nullable=False
+picture       | String(250) |
+cat_id        | Integer     | ForeignKey('category.id')
+user_id       | Integer     | ForeignKey('user.id')
 
 ## Getting Started
 
