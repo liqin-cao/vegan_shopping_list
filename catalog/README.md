@@ -112,7 +112,12 @@ You should be able to view vegan alternative categories and items. After logging
 
 ## Built With
 
-* [Python 2.7.12](https://docs.python.org/2/index.html) - The programming used
+* [Python 2.7.12](https://docs.python.org/2/index.html) - the programming used
+* [Werkzeug 0.8.3](http://werkzeug.pocoo.org) - pip install werkzeug==0.8.3
+* [Flask 0.9](https://flask-ptbr.readthedocs.io/en/latest/quickstart.html) - pip install flask==0.9
+* [Flask-Login 0.1.3](https://flask-login.readthedocs.io/en/0.1.3) - pip install Flask-Login==0.1.3
+* [SQLAlchemy](http://www.sqlalchemy.org) - Python SQL toolkit and Object Relational Mapper
+* [oauth2client](https://github.com/google/oauth2client) - client library for accessing resources protected by OAuth 2.0
 
 ## Tested With
 
