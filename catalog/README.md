@@ -20,7 +20,7 @@ The application can be access via http://localhost:8000 with the following pages
 * JSON endpoint: /catalog.json
     * Retrieves all the vegan items grouped by category
 
-This application is written in Python using Flask web framework, a third-party OAuth 2.0 authentication & authorization service (like Google Accounts and Facebook Accounts), and SQLAlchemy SQL toolkit to manage the following database tables:
+This application is written in [Python](https://www.python.org/) using [Flask](http://flask.pocoo.org/) web framework, a third-party [OAuth 2.0](https://oauth.net/2/) authentication & authorization service (like Google Accounts and Facebook Accounts), and [SQLAlchemy](http://www.sqlalchemy.org/) SQL toolkit to manage the following database tables:
 
 Table **user**
 
@@ -52,7 +52,7 @@ user_id       | Integer     | ForeignKey('user.id')
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running for testing purposes.
+These instructions will get you a copy of the application up and running.
 
 ### Git
 
@@ -78,11 +78,11 @@ From the terminal, run:
 
     git clone https://github.com/liqinca0/vegan_shopping_list.git
 
-This will give you a directory named **vegan_shopping_list** complete with the source code for the application and a vagrantfile for installing all of the necessary tools. 
+This will give you a directory named **vegan_shopping_list** complete with the source code for the application and a **vagrantfile** for installing all of the necessary tools. 
 
 ## Run the virtual machine!
 
-Using the terminal, change directory to vegan_shopping_list (**cd vegan_shopping_list**), then type **vagrant up** to launch your virtual machine:
+Using the terminal, change directory to vegan_shopping_list (**cd /vegan_shopping_list**), then type **vagrant up** to launch your virtual machine:
 
     > cd /vegan_shopping_list
     > vagrant up
@@ -103,9 +103,9 @@ Type **ls** to ensure that you are inside the directory that contains applicatio
     > python lots_vegan_items.py
     > python application.py
     
-1. Now type **python models.py** to initialize the database.
-2. Type **python lots_vegan_items.py** to populate the database with vegan alternative categories and items.
-3. Type **python application.py** to run the Flask web server.
+1. **python models.py** - initializes the database
+2. **python lots_vegan_items.py** - populates the database with vegan alternative categories and items (optional)
+3. **python application.py** - runs the Flask web server
 4. In your browser visit **http://localhost:8000** to view the vegan shopping list app.
 
 You should be able to view vegan alternative categories and items. After logging in with Google or Facebook account, you should be able to add, edit, and delete your own vegan items.
@@ -121,7 +121,11 @@ You should be able to view vegan alternative categories and items. After logging
 
 ## Tested With
 
-* Google Chrome Version 68.0.3440.106 (Official Build) (64-bit)
+* [Google Chrome Version 68.0.3440.106](https://www.google.com/chrome/) (Official Build) (64-bit)
+
+## Troubleshooting
+
+QQQ
 
 ## Contributing
 
