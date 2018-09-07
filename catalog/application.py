@@ -17,6 +17,7 @@ import random
 import string
 import httplib2
 import json
+import bleach
 
 from oauthUtils import authorized, gen_state_token
 from oauthUtils import google_connect, facebook_connect, logout
@@ -156,12 +157,12 @@ def showCategoryItems(category_name):
     if category_id is None:
         return render_template(
             'error.html',
-            errormsg="Oops... Category {} is not found".format(category_name))
+            errormsg="Oops... Category is not found")
 
     items = session.query(Item).filter_by(
         cat_id=category_id).order_by(asc(Item.title)).all()
     selectedCategory = session.query(Category).filter_by(id=category_id).one()
-    # jsonify(Items=[[item.serialize for item in items]])
+    
     return render_template(
         'catalog.html',
         leftPanel='category/categorylist.html',
@@ -178,13 +179,13 @@ def showCategoryItem(category_name, item_title):
     if item_id is None:
         return render_template(
             'error.html',
-            errormsg="Oops... Item {} is not found".format(item_title))
+            errormsg="Oops... Item is not found")
 
     selectedCategoryItem = session.query(Item).filter_by(id=item_id).one()
     if selectedCategoryItem is None:
         return render_template(
             'error.html',
-            errormsg="Oops... Item {} is not found".format(item_title))
+            errormsg="Oops... Item is not found")
 
     items = session.query(Item).filter_by(
         cat_id=selectedCategoryItem.cat_id).order_by(asc(Item.title)).all()
@@ -208,8 +209,8 @@ def newCatalogItem():
         # Create a new category item
         if request.form['title']:
             newItem = Item(
-                title=request.form['title'],
-                description=request.form['description'],
+                title=bleach.clean(request.form['title']),
+                description=bleach.clean(request.form['description']),
                 cat_id=request.form['category'],
                 user_id=login_session['user_id'])
             session.add(newItem)
@@ -256,20 +257,20 @@ def editCategoryItem(item_title):
     if item_id is None:
         return render_template(
             'error.html',
-            errormsg="Oops... Item {} is not found".format(item_title))
+            errormsg="Oops... Item is not found")
 
     editCategoryItem = session.query(Item).filter_by(id=item_id).one()
     if editCategoryItem is None:
         return render_template(
             'error.html',
-            errormsg="Oops... Item {} is not found".format(item_title))
+            errormsg="Oops... Item is not found")
 
     if request.method == 'POST':
         # Update the category item.
         if request.form['title']:
-            editCategoryItem.title = request.form['title']
+            editCategoryItem.title = bleach.clean(request.form['title'])
         if request.form['description']:
-            editCategoryItem.description = request.form['description']
+            editCategoryItem.description = bleach.clean(request.form['description'])
         session.add(editCategoryItem)
         session.commit()
         flash("{} as been successfully updated in {}".format(
@@ -303,13 +304,13 @@ def deleteCategoryItem(item_title):
     if item_id is None:
         return render_template(
             'error.html',
-            errormsg="Oops... Item {} is not found".format(item_title))
+            errormsg="Oops... Item is not found")
 
     deleteCategoryItem = session.query(Item).filter_by(id=item_id).one()
     if deleteCategoryItem is None:
         return render_template(
             'error.html',
-            errormsg="Oops... Item {} is not found".format(item_title))
+            errormsg="Oops... Item is not found")
 
     if request.method == 'POST':
         # Delete the category item

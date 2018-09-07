@@ -73,7 +73,7 @@ Vagrant is the software that configures the VM and lets you share files between 
 
 From the terminal, run:
 
-    git clone https://github.com/liqinca0/OAuth2.0 oauth
+    git clone https://github.com/liqinca0/vegan_shopping_list.git
 
 This will give you a directory named **vegan_shopping_list** complete with the source code for the application and a vagrantfile for installing all of the necessary tools. 
 
