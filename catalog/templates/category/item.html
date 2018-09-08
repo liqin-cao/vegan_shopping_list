@@ -8,10 +8,10 @@
         </div>
         {%if 'username' in session and session['user_id'] == selectedCategoryItem.user_id %}
         <div class="categoryitem-actions">
-            <a href="{{url_for('editCategoryItem', item_title = selectedCategoryItem.title, item_id = selectedCategoryItem.id)}}">
+            <a href="{{url_for('editCategoryItem', item_title = selectedCategoryItem.urltitle, item_id = selectedCategoryItem.id)}}">
                 <span class="glyphicon glyphicon-edit"></span>
             </a>
-            <a href="{{url_for('deleteCategoryItem', item_title = selectedCategoryItem.title, item_id = selectedCategoryItem.id)}}">
+            <a href="{{url_for('deleteCategoryItem', item_title = selectedCategoryItem.urltitle, item_id = selectedCategoryItem.id)}}">
                 <span class="glyphicon glyphicon-trash"></span>
             </a>
         </div>

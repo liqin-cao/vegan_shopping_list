@@ -193,7 +193,8 @@ def showCategoryItem(category_name, item_title):
         return page_not_found(None)
 
     try:
-        selectedCategoryItem = db_session.query(Item).filter_by(id=item_id).one()
+        selectedCategoryItem = db_session.query(Item).filter_by(
+            id=item_id).one()
     except NoResultFound:
         return page_not_found(None)
 
@@ -229,8 +230,8 @@ def newCatalogItem():
                 newItem.title, newItem.category.name))
             return redirect(url_for(
                 'showCategoryItem',
-                category_name=newItem.category.name,
-                item_title=newItem.title,
+                category_name=newItem.category.urlname,
+                item_title=newItem.urltitle,
                 item_id=newItem.id))
         else:
             return render_template(
@@ -289,8 +290,8 @@ def editCategoryItem(item_title):
             editCategoryItem.title, editCategoryItem.category.name))
         return redirect(url_for(
             'showCategoryItem',
-            category_name=editCategoryItem.category.name,
-            item_title=editCategoryItem.title,
+            category_name=editCategoryItem.category.urlname,
+            item_title=editCategoryItem.urltitle,
             item_id=editCategoryItem.id))
     else:
         # Show edit category item page
@@ -330,7 +331,7 @@ def deleteCategoryItem(item_title):
             deleteCategoryItem.title, deleteCategoryItem.category.name))
         return redirect(url_for(
             'showCategoryItems',
-            category_name=category.name,
+            category_name=category.urlname,
             category_id=category.id))
     else:
         # Show delete category item confirmation page

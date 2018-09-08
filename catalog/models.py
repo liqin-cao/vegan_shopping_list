@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import datetime
+import re
 
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
@@ -44,6 +45,13 @@ class Category(Base):
             'id': self.id,
         }
 
+    @property
+    def urlname(self):
+        """Remove everything except alphanumeric
+        characters from category name"""
+        pattern = re.compile('[\W_]+')
+        return pattern.sub('', self.name)
+
 
 # Db table for storing category items
 class Item(Base):
@@ -53,7 +61,6 @@ class Item(Base):
     created_date = Column(DateTime, default=datetime.datetime.utcnow)
     title = Column(String(80), nullable=False)
     description = Column(String(250), nullable=False)
-    picture = Column(String(250))
     cat_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
     user_id = Column(Integer, ForeignKey('user.id'))
@@ -69,6 +76,13 @@ class Item(Base):
             'description': self.description,
             'cat_id': self.cat_id
         }
+
+    @property
+    def urltitle(self):
+        """Remove everything except alphanumeric
+        characters from item title"""
+        pattern = re.compile('[\W_]+')
+        return pattern.sub('', self.title)
 
 
 engine = create_engine('sqlite:///catalogWithOAuth.db')

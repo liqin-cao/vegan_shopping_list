@@ -12,7 +12,7 @@
             <div class="categoryitem-actions">
                 <div class="categoryitem-actions">
                     <button type="submit" class="btn-action left" id="submit">Yes</button>
-                    <a href="{{url_for('showCategoryItem', category_name = selectedCategoryItem.category.name, item_title = selectedCategoryItem.title, item_id = selectedCategoryItem.id)}}">
+                    <a href="{{url_for('showCategoryItem', category_name = selectedCategoryItem.category.urlname, item_title = selectedCategoryItem.urltitle, item_id = selectedCategoryItem.id)}}">
                         <span class="btn-action right" style="margin-top:5px;">Cancel</span>
                     </a>
                 </div>

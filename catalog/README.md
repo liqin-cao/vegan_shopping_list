@@ -46,7 +46,6 @@ id            | Integer     | primary_key=True
 created_date  | DateTime    | default=datetime.datetime.utcnow
 title         | String(80)  | nullable=False
 description   | String(250) | nullable=False
-picture       | String(250) |
 cat_id        | Integer     | ForeignKey('category.id')
 user_id       | Integer     | ForeignKey('user.id')
 

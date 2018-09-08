@@ -2,7 +2,7 @@
     <div class="row catalog-title">
         {% if selectedCategoryItem %}
         <h2>
-            <a href="{{url_for('showCategoryItems', category_name = selectedCategoryItem.category.name, category_id = selectedCategoryItem.cat_id)}}">
+            <a href="{{url_for('showCategoryItems', category_name = selectedCategoryItem.category.urlname, category_id = selectedCategoryItem.cat_id)}}">
                 <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
             </a>
             {{selectedCategory.name}} Items ({{items|length}} items)
@@ -21,7 +21,7 @@
     </div>
     <div class="content-panel">
         {% if items %} {% for item in items %}
-        <a href="{{url_for('showCategoryItem', category_name = item.category.name, item_title = item.title, item_id = item.id)}}">
+        <a href="{{url_for('showCategoryItem', category_name = item.category.urlname, item_title = item.urltitle, item_id = item.id)}}">
             {% if selectedCategoryItem and item.id == selectedCategoryItem.id %}
             <div class="categoryitems-list selected">
                 <h3>{{item.title}}</h3>

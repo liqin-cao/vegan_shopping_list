@@ -31,7 +31,7 @@
             <div class="categoryitem-actions">
                 <button type="submit" class="btn-action left" id="submit">Add</button>
                 {% if selectedCategory %}
-                <a href="{{url_for('showCategoryItems', category_name = selectedCategory.name, category_id = selectedCategory.id)}}">
+                <a href="{{url_for('showCategoryItems', category_name = selectedCategory.urlname, category_id = selectedCategory.id)}}">
                 {% else %}
                 <a href="{{url_for('showCategories')}}">
                 {% endif %}
