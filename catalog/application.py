@@ -8,7 +8,7 @@ from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
-from models import Base, Category, Item, User
+from db_models import Base, Category, Item, User
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -19,8 +19,8 @@ import httplib2
 import json
 import bleach
 
-from oauthUtils import authorized, gen_state_token
-from oauthUtils import google_connect, facebook_connect, logout
+from oauth_utils import authorized, gen_state_token
+from oauth_utils import google_connect, facebook_connect, logout
 
 app = Flask(__name__)
 app.jinja_env.globals.update(gen_state_token=gen_state_token)
@@ -28,8 +28,8 @@ app.jinja_env.globals.update(gen_state_token=gen_state_token)
 # Connect to Database and create database session
 engine = create_engine('sqlite:///catalogWithOAuth.db')
 Base.metadata.bind = engine
-db_session = scoped_session(sessionmaker(bind=engine))
-Categories = db_session.query(Category).order_by(asc(Category.name))
+DB_session = scoped_session(sessionmaker(bind=engine))
+Categories = DB_session.query(Category).order_by(asc(Category.name))
 
 
 # Registered a logged in user in the database.
@@ -50,7 +50,7 @@ def registerUser():
 # Retrieve user id by email
 def getUserID(email):
     try:
-        user = db_session.query(User).filter_by(email=email).one()
+        user = DB_session.query(User).filter_by(email=email).one()
         return user.id
     except NoResultFound:
         return None
@@ -59,7 +59,7 @@ def getUserID(email):
 # Retrieve user info by id
 def getUserInfo(user_id):
     try:
-        user = db_session.query(User).filter_by(id=user_id).one()
+        user = DB_session.query(User).filter_by(id=user_id).one()
         return user
     except NoResultFound:
         return None
@@ -71,10 +71,10 @@ def createUser():
         name=login_session['username'],
         email=login_session['email'],
         picture=login_session['picture'])
-    db_session.add(newUser)
-    db_session.commit()
+    DB_session.add(newUser)
+    DB_session.commit()
     try:
-        user = db_session.query(User).filter_by(
+        user = DB_session.query(User).filter_by(
             email=login_session['email']).one()
         return user.id
     except NoResultFound:
@@ -87,9 +87,9 @@ def getCatalogJSON():
        return it as a single json object.'''
     categoriesJSON = []
 
-    categories = db_session.query(Category).all()
+    categories = DB_session.query(Category).all()
     for category in categories:
-        items = db_session.query(Item).filter_by(cat_id=category.id).all()
+        items = DB_session.query(Item).filter_by(cat_id=category.id).all()
         categoryJSON = category.serialize
         categoryJSON['Item'] = [item.serialize for item in items]
         categoriesJSON.append(categoryJSON)
@@ -98,8 +98,19 @@ def getCatalogJSON():
 
 
 @app.teardown_request
-def remove_session(ex=None):
-    db_session.remove()
+def remove_session(exception=None):
+    # http://docs.sqlalchemy.org/en/rel_1_0/orm/contextual.html#using-thread-local-scope-with-web-applications
+    # https://github.com/mitsuhiko/flask-sqlalchemy/issues/379
+    #
+    # The process of integrating the SQLAlchemy Session with the web
+    # application has exactly two requirements:
+    # 1. Create a single scoped_session registry when the web application
+    # first starts, ensuring that this object is accessible by the rest of
+    # the application.
+    # 2. Ensure that scoped_session.remove() is called when the web request
+    # ends, usually by integrating with the web framework's event system to
+    # establish an "on request end" event.
+    DB_session.remove()
 
 
 # Login with Google oauth api
@@ -150,8 +161,8 @@ def showError():
 # Show home page: categories | latest items
 @app.route('/')
 def showCategories():
-    Categories = db_session.query(Category).order_by(asc(Category.name))
-    latestItems = db_session.query(Item).order_by(
+    Categories = DB_session.query(Category).order_by(asc(Category.name))
+    latestItems = DB_session.query(Item).order_by(
         asc(Item.created_date)).limit(Categories.count())
     return render_template(
         'catalog.html',
@@ -168,10 +179,10 @@ def showCategoryItems(category_name):
     if category_id is None:
         return page_not_found(None)
 
-    items = db_session.query(Item).filter_by(
+    items = DB_session.query(Item).filter_by(
         cat_id=category_id).order_by(asc(Item.title)).all()
     try:
-        selectedCategory = db_session.query(Category).filter_by(
+        selectedCategory = DB_session.query(Category).filter_by(
             id=category_id).one()
     except NoResultFound:
         return page_not_found(None)
@@ -193,12 +204,12 @@ def showCategoryItem(category_name, item_title):
         return page_not_found(None)
 
     try:
-        selectedCategoryItem = db_session.query(Item).filter_by(
+        selectedCategoryItem = DB_session.query(Item).filter_by(
             id=item_id).one()
     except NoResultFound:
         return page_not_found(None)
 
-    items = db_session.query(Item).filter_by(
+    items = DB_session.query(Item).filter_by(
         cat_id=selectedCategoryItem.cat_id).order_by(asc(Item.title)).all()
     return render_template(
         'catalog.html',
@@ -224,8 +235,8 @@ def newCatalogItem():
                 description=bleach.clean(request.form['description']),
                 cat_id=request.form['category'],
                 user_id=login_session['user_id'])
-            db_session.add(newItem)
-            db_session.commit()
+            DB_session.add(newItem)
+            DB_session.commit()
             flash("{} as been successfully added to {}".format(
                 newItem.title, newItem.category.name))
             return redirect(url_for(
@@ -242,7 +253,7 @@ def newCatalogItem():
         category_id = request.args.get('category_id')
         if category_id is not None:
             try:
-                selectedCategory = db_session.query(Category).filter_by(
+                selectedCategory = DB_session.query(Category).filter_by(
                     id=category_id).one()
             except NoResultFound:
                 return page_not_found(None)
@@ -273,7 +284,7 @@ def editCategoryItem(item_title):
         return page_not_found(None)
 
     try:
-        editCategoryItem = db_session.query(Item).filter_by(id=item_id).one()
+        editCategoryItem = DB_session.query(Item).filter_by(id=item_id).one()
     except NoResultFound:
         return page_not_found(None)
 
@@ -284,8 +295,8 @@ def editCategoryItem(item_title):
         if request.form['description']:
             editCategoryItem.description = bleach.clean(
                 request.form['description'])
-        db_session.add(editCategoryItem)
-        db_session.commit()
+        DB_session.add(editCategoryItem)
+        DB_session.commit()
         flash("{} as been successfully updated in {}".format(
             editCategoryItem.title, editCategoryItem.category.name))
         return redirect(url_for(
@@ -295,7 +306,7 @@ def editCategoryItem(item_title):
             item_id=editCategoryItem.id))
     else:
         # Show edit category item page
-        items = db_session.query(Item).filter_by(
+        items = DB_session.query(Item).filter_by(
             cat_id=editCategoryItem.cat_id).order_by(asc(Item.title)).all()
         return render_template(
             'catalog.html',
@@ -318,15 +329,15 @@ def deleteCategoryItem(item_title):
         return page_not_found(None)
 
     try:
-        deleteCategoryItem = db_session.query(Item).filter_by(id=item_id).one()
+        deleteCategoryItem = DB_session.query(Item).filter_by(id=item_id).one()
     except NoResultFound:
         return page_not_found(None)
 
     if request.method == 'POST':
         # Delete the category item
         category = deleteCategoryItem.category
-        db_session.delete(deleteCategoryItem)
-        db_session.commit()
+        DB_session.delete(deleteCategoryItem)
+        DB_session.commit()
         flash("{} as been successfully removed from {}".format(
             deleteCategoryItem.title, deleteCategoryItem.category.name))
         return redirect(url_for(
@@ -335,7 +346,7 @@ def deleteCategoryItem(item_title):
             category_id=category.id))
     else:
         # Show delete category item confirmation page
-        items = db_session.query(Item).filter_by(
+        items = DB_session.query(Item).filter_by(
             cat_id=deleteCategoryItem.cat_id).order_by(asc(Item.title)).all()
         return render_template(
             'catalog.html',

@@ -95,15 +95,15 @@ Now that you have Vagrant up and running type **vagrant ssh** to log into your V
     > cd /vegan_shopping_list
     > cd /catalog
     
-Type **ls** to ensure that you are inside the directory that contains application.py, models.py, lots_vegan_items.py, oauthUtils.py, fb_client_secrets.json, google_client_secrets.json and two directories named 'templates' and 'static'.
+Type **ls** to ensure that you are inside the directory that contains application.py, db_models.py, db_initdata.py, oauth_utils.py, fb_client_secrets.json, google_client_secrets.json and two directories named 'templates' and 'static'.
 
     > ls
-    > python models.py
-    > python lots_vegan_items.py
+    > python db_models.py
+    > python db_initdata.py
     > python application.py
     
-1. **python models.py** - initializes the database
-2. **python lots_vegan_items.py** - populates the database with vegan alternative categories and some vegan items
+1. **python db_models.py** - initializes the database
+2. **python db_initdata.py** - populates the database with vegan alternative categories and some vegan items
 3. **python application.py** - runs the Flask web server
 4. In your browser visit **http://localhost:8000** to view the vegan shopping list app.
 

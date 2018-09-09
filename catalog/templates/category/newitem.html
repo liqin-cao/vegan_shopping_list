@@ -17,10 +17,12 @@
                     <textarea class="form-control" maxlength="250" rows="3" name="description" placeholder="Description of the item" required></textarea>
 
                     <label for="category">Category:</label>
-                    <select class="form-control" name="category">
+                    
                     {% if selectedCategory %}
+                    <select class="form-control" name="category" disabled>
                         <option value="{{selectedCategory.id}}">{{selectedCategory.name}}</option>
                     {% else %}
+                    <select class="form-control" name="category">
                         {% for category in categories %}
                         <option value="{{category.id}}">{{category.name}}</option>
                         {% endfor %}
