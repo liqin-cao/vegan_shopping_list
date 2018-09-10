@@ -3,7 +3,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from models import Category, Base, Item, User
+from db_models import Category, Base, Item, User
 
 engine = create_engine('sqlite:///catalogWithOAuth.db')
 # Bind the engine to the metadata of the Base class so that the
