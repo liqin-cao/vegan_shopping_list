@@ -408,15 +408,24 @@ a {
 .login-tile .title {
 	padding: 15px;
 	font-size: 18px;
-	border-left: 2px solid #42C3C9;
+	border-right: 2px solid #42C3C9;
 }
-.google-btn {
+.google-btn button {
+	margin: 5px 20px;
+	background: transparent;
 	border: none;
-	background: none;
+}
+
+.facebook-btn button {
+	margin: 10px;
+	background: transparent;
+	border: none;
 }
 .abcRioButton.abcRioButtonLightBlue {
-	-webkit-box-shadow: none;
-	        box-shadow: none;
+	border-radius: 5px;
+}
+.abcRioButtonContents {
+	font-size: 16px;
 }
 .login-btn-close {
 	color:#4A4A4A;

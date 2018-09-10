@@ -1,5 +1,4 @@
-<div class="col-md-4 category-list-panel">
-
+<div class="col-xs-4 category-list-panel">
 	<div class="row catalog-title" style="height:62px">
 		<h2>
 			{% if selectedCategory %}
@@ -10,6 +9,7 @@
 			Categories
 		</h2>
 	</div>
+	
 	<div class="content-panel">
 		{% for category in categories %}
 		<a href="{{url_for('showCategoryItems', category_name = category.urlname, category_id = category.id)}}">

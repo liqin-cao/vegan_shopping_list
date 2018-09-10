@@ -10,6 +10,15 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
 	<script src="https://apis.google.com/js/platform.js?onload=start"> </script>
+	<script>
+		gapi.load('auth2', function () {
+			auth2 = gapi.auth2.init({
+				client_id: '797078761192-jjv3gff8s5fkedtehen27bjns0aj5uqk.apps.googleusercontent.com',
+				// Scopes to request in addition to 'profile' and 'email'
+				//scope: 'additional_scope'
+			});
+		});
+	</script>
 </head>
 
 <body>

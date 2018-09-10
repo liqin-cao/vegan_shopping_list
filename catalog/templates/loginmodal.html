@@ -10,6 +10,7 @@
                     <img src="/static/vegan_shopping_bag.png" alt="Bag" style="height:45px"> Welcome to Vegan Shopping List
                 </h4>
             </div>
+
             <div class="modal-body">
                 <div class="login-panel">
                     {% set STATE = gen_state_token() %}
@@ -17,14 +18,16 @@
                     <div id="result"></div>
 
                     <!-- GOOGLE SIGN IN -->
-                    <div class="login-tile">
-                        <div id="signinButton" style="margin:10px 30px 0px 30px;">
-                            <span class="g-signin" data-scope="openid email" data-clientid="797078761192-jjv3gff8s5fkedtehen27bjns0aj5uqk.apps.googleusercontent.com"
-                                data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin"
-                                data-callback="signInCallback" data-approvalprompt="force">
-                            </span>
+                    <div class="row login-tile">
+                        <span class="col-xs-7 title">Continue with Google</span>
+                        <div class="col-xs-5 google-btn">
+                            <button class="g-signin2" id="signinButton">Sign in with Google</button>
+                            <script>
+                                $('#signinButton').click(function () {
+                                    auth2.grantOfflineAccess({ 'redirect_uri': 'postmessage' }).then(signInCallback);
+                                });
+                            </script>
                         </div>
-                        <span class="title">Continue with Google</span>
                     </div>
                     <script>
                         function signInCallback(authResult) {
@@ -126,20 +129,21 @@
                             });
                         }
                     </script>
-                    <div class="login-tile">
-                        <div>
-                            <button style="margin: 10px;">
+                    <div class="row login-tile">
+                        <span class="col-xs-7 title">Continue with Facebook</span>
+                        <div class="col-xs-5 facebook-btn">
+                            <button>
                                 <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
                                     <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
                                 </fb:login-button>
                             </button>
                         </div>
-                        <span class="title">Continue with Facebook</span>
                     </div>
                     <!--END FACEBOOK SIGN IN -->
 
                 </div>
             </div>
+            
             <div class="modal-footer">
                 <button type="button" class="btn btn-default login-btn-close" data-dismiss="modal">Close</button>
             </div>

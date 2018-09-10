@@ -1,12 +1,11 @@
-<div class="col-md-8 categoryitem-panel">
+<div class="col-xs-8 categoryitem-panel">
     <div class="row catalog-title">
-        <div class="row catalog-title">
-            <h2>Edit {{selectedCategoryItem.title}}</h2>
-        </div>
+        <h2>Edit {{selectedCategoryItem.title}}</h2>
     </div>
+    
     <div class="content-panel">
         <form action="#" method="post">
-            <div class="row categoryitem">
+            <div class="categoryitem">
                 <div class="form-group">
                     <label for="title">Title:</label>
                     <input type="text" maxlength="80" class="form-control" name="title" value="{{selectedCategoryItem.title}}" required>

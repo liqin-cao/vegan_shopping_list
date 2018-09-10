@@ -68,6 +68,16 @@ VirtualBox is the software that actually runs the VM. [You can download it from 
 
 Vagrant is the software that configures the VM and lets you share files between your host computer and the VM's filesystem.  [You can download it from vagrantup.com.](https://www.vagrantup.com/downloads) Install the version for your operating system.
 
+### Prerequisites
+
+* [Python 2.7.12](https://docs.python.org/2/index.html) - the programming used
+* [Werkzeug 0.8.3](http://werkzeug.pocoo.org) - pip install werkzeug==0.8.3
+* [Flask 0.9](https://flask-ptbr.readthedocs.io/en/latest/quickstart.html) - pip install flask==0.9
+* [Flask-Login 0.1.3](https://flask-login.readthedocs.io/en/0.1.3) - pip install Flask-Login==0.1.3
+* [SQLAlchemy](http://www.sqlalchemy.org) - Python SQL toolkit and Object Relational Mapper
+* [oauth2client](https://github.com/google/oauth2client) - client library for accessing resources protected by OAuth 2.0
+* [vagrantfile...](https://github.com/liqin-cao/vegan_shopping_list/blob/master/vagrantfile) - VM configurations
+
 ## Fetch the Source Code and VM Configuration
 
 **Windows:** Use the Git Bash program (installed with Git) to get a Unix-style terminal.  
@@ -108,15 +118,6 @@ Type **ls** to ensure that you are inside the directory that contains applicatio
 4. In your browser visit **http://localhost:8000** to view the vegan shopping list app.
 
 You should be able to view vegan alternative categories and items. After logging in with Google or Facebook account, you should be able to add, edit, and delete your own vegan items.
-
-## Built With
-
-* [Python 2.7.12](https://docs.python.org/2/index.html) - the programming used
-* [Werkzeug 0.8.3](http://werkzeug.pocoo.org) - pip install werkzeug==0.8.3
-* [Flask 0.9](https://flask-ptbr.readthedocs.io/en/latest/quickstart.html) - pip install flask==0.9
-* [Flask-Login 0.1.3](https://flask-login.readthedocs.io/en/0.1.3) - pip install Flask-Login==0.1.3
-* [SQLAlchemy](http://www.sqlalchemy.org) - Python SQL toolkit and Object Relational Mapper
-* [oauth2client](https://github.com/google/oauth2client) - client library for accessing resources protected by OAuth 2.0
 
 ## Tested With
 

@@ -1,4 +1,4 @@
-<div class="col-md-8 latest-list-panel">
+<div class="col-xs-8 latest-list-panel">
     <div class="row catalog-title" style="height:62px">
         <h2 class="space-between">
             Latest Items
@@ -10,6 +10,7 @@
             {% endif %}
         </h2>
     </div>
+    
     <div class="content-panel">
         {% for item in latestItems %}
         <a href="{{url_for('showCategoryItem', category_name = item.category.urlname, item_title = item.urltitle, item_id = item.id)}}">
