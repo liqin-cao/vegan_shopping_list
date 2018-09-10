@@ -31,7 +31,7 @@ def authorized():
 
 
 # Revoke a current user's token and reset their login_session
-def logout():
+def disconnect():
     if 'provider' in login_session:
         if login_session['provider'] == 'google':
             google_disconnect()

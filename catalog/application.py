@@ -20,7 +20,7 @@ import json
 import bleach
 
 from oauth_utils import authorized, gen_state_token
-from oauth_utils import google_connect, facebook_connect, logout
+from oauth_utils import google_connect, facebook_connect, disconnect
 
 app = Flask(__name__)
 app.jinja_env.globals.update(gen_state_token=gen_state_token)
@@ -81,22 +81,6 @@ def createUser():
         return None
 
 
-# Returns all category items in JSON format.
-def getCatalogJSON():
-    '''Retrieve the entire catalog from database and
-       return it as a single json object.'''
-    categoriesJSON = []
-
-    categories = DB_session.query(Category).all()
-    for category in categories:
-        items = DB_session.query(Item).filter_by(cat_id=category.id).all()
-        categoryJSON = category.serialize
-        categoryJSON['Item'] = [item.serialize for item in items]
-        categoriesJSON.append(categoryJSON)
-
-    return categoriesJSON
-
-
 @app.teardown_request
 def remove_session(exception=None):
     # http://docs.sqlalchemy.org/en/rel_1_0/orm/contextual.html#using-thread-local-scope-with-web-applications
@@ -111,6 +95,23 @@ def remove_session(exception=None):
     # ends, usually by integrating with the web framework's event system to
     # establish an "on request end" event.
     DB_session.remove()
+
+
+# JSON API to view all catalog items in all categories
+@app.route('/catalog.json')
+def catalogJSON():
+    '''Retrieve the entire catalog from database and
+       return it as a single json object.'''
+    categoriesJSON = []
+
+    categories = DB_session.query(Category).all()
+    for category in categories:
+        items = DB_session.query(Item).filter_by(cat_id=category.id).all()
+        categoryJSON = category.serialize
+        categoryJSON['Item'] = [item.serialize for item in items]
+        categoriesJSON.append(categoryJSON)
+
+    return jsonify(Category=categoriesJSON)
 
 
 # Login with Google oauth api
@@ -137,8 +138,8 @@ def fbconnect():
 
 # Logout based on provider
 @app.route('/logout')
-def showLogout():
-    logout()
+def logout():
+    disconnect()
     return redirect(url_for('showCategories'))
 
 
@@ -151,7 +152,7 @@ def page_not_found(e):
 
 # Show error page
 @app.route('/error')
-def showError():
+def error():
     return render_template(
         'error.html',
         errormsg="""Oops... Something went wrong.  Please check
@@ -355,12 +356,6 @@ def deleteCategoryItem(item_title):
             selectedCategory=deleteCategoryItem.category,
             selectedCategoryItem=deleteCategoryItem,
             items=items)
-
-
-# JSON API to view all catalog items in all categories
-@app.route('/catalog.json')
-def catalogJSON():
-    return jsonify(Category=getCatalogJSON())
 
 
 if __name__ == '__main__':
