@@ -121,7 +121,6 @@ You should be able to view vegan alternative categories and items. After logging
 ## Tested With
 
 * Google Chrome Version 68.0.3440.106
-* Internet Explorer 11 Version 11.1540.10586.0
 * Microsoft Edge Version 25.10586.672.0
 * Firefox Version 27.0.1
 
