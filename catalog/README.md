@@ -70,11 +70,10 @@ Vagrant is the software that configures the VM and lets you share files between 
 
 ### Prerequisites
 
-* [Python 2.7.12](https://docs.python.org/2/index.html) - the programming used
-* [Werkzeug 0.8.3](http://werkzeug.pocoo.org) - pip install werkzeug==0.8.3
-* [Flask 0.9](https://flask-ptbr.readthedocs.io/en/latest/quickstart.html) - pip install flask==0.9
-* [Flask-Login 0.1.3](https://flask-login.readthedocs.io/en/0.1.3) - pip install Flask-Login==0.1.3
-* [SQLAlchemy](http://www.sqlalchemy.org) - Python SQL toolkit and Object Relational Mapper
+* [Python 2.7.12](https://docs.python.org/2/) - the application programming language
+* [Werkzeug 0.8.3](http://werkzeug.pocoo.org/) - the Python WSGI utility library (pip install werkzeug==0.8.3)
+* [Flask 0.9](http://flask.pocoo.org/) - the microframework for Python based on Werkzeug, Jinja 2 (pip install flask==0.9)
+* [SQLAlchemy 1.2.11](http://www.sqlalchemy.org) - Python SQL toolkit and Object Relational Mapper
 * [oauth2client](https://github.com/google/oauth2client) - client library for accessing resources protected by OAuth 2.0
 * [vagrantfile...](https://github.com/liqin-cao/vegan_shopping_list/blob/master/vagrantfile) - VM configurations
 
@@ -121,7 +120,10 @@ You should be able to view vegan alternative categories and items. After logging
 
 ## Tested With
 
-* [Google Chrome Version 68.0.3440.106](https://www.google.com/chrome/) (Official Build) (64-bit)
+* Google Chrome Version 68.0.3440.106
+* Internet Explorer 11 Version 11.1540.10586.0
+* Microsoft Edge Version 25.10586.672.0
+* Firefox Version 27.0.1
 
 ## Troubleshooting
 

@@ -10,15 +10,11 @@
 			<button type="button" class="btn btn-info btn-lg btn-login" data-toggle="modal" data-target="#loginModal">
 				<span class="glyphicon glyphicon-log-in"></span>Login
 			</button>
-			{% else %}
+			{% else %} {% if 'picture' in session %}
+			<img src="{{session['picture']}}" class="user-img"> {% else %}
+			<img src="/static/blank_user.gif" class="user-img"> {% endif %}
 
-			{% if 'picture' in session %}
-			<img src="{{session['picture']}}" class="user-img">
-			{% else %}
-			<img src="/static/blank_user.gif" class="user-img">
-			{% endif %}
-
-			<a href={{url_for('logout')}} class="btn btn-info btn-lg btn-login">
+			<a href={{url_for( 'logout')}} class="btn btn-info btn-lg btn-login">
 				<span class="glyphicon glyphicon-log-out"></span>Logout
 			</a>
 			{% endif %}
@@ -39,9 +35,14 @@
 			</ul>
 			{% endif %} {% endwith %}
 		</div>
-		
+
 		<h1 class="subtitle">A Community Maintained List of Vegan Alternatives</h1>
 	</div>
-	
+
 	{% include "loginmodal.html" %}
+	<script>
+		$("#loginModal").on('show.bs.modal', function () {
+			console.log("Login Modal Open");
+		});
+	</script>
 </div>
