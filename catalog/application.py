@@ -29,7 +29,6 @@ app.jinja_env.globals.update(gen_state_token=gen_state_token)
 engine = create_engine('sqlite:///catalogWithOAuth.db')
 Base.metadata.bind = engine
 DB_session = scoped_session(sessionmaker(bind=engine))
-Categories = DB_session.query(Category).order_by(asc(Category.name))
 
 
 # Registered a logged in user in the database.
@@ -104,7 +103,7 @@ def catalogJSON():
        return it as a single json object.'''
     categoriesJSON = []
 
-    categories = DB_session.query(Category).all()
+    categories = DB_session.query(Category).order_by(asc(Category.name))
     for category in categories:
         items = DB_session.query(Item).filter_by(cat_id=category.id).all()
         categoryJSON = category.serialize
@@ -162,14 +161,15 @@ def error():
 # Show home page: categories | latest items
 @app.route('/')
 def showCategories():
-    Categories = DB_session.query(Category).order_by(asc(Category.name))
+    categories = DB_session.query(Category).order_by(asc(Category.name))
     latestItems = DB_session.query(Item).order_by(
-        asc(Item.created_date)).limit(Categories.count())
+        asc(Item.created_date)).limit(categories.count())
+    flash("Welcome!")
     return render_template(
         'catalog.html',
         leftPanel='category/categorylist.html',
         rightPanel='category/latestlist.html',
-        categories=Categories,
+        categories=categories,
         latestItems=latestItems)
 
 
@@ -188,11 +188,12 @@ def showCategoryItems(category_name):
     except NoResultFound:
         return page_not_found(None)
 
+    categories = DB_session.query(Category).order_by(asc(Category.name))
     return render_template(
         'catalog.html',
         leftPanel='category/categorylist.html',
         rightPanel='category/itemlist.html',
-        categories=Categories,
+        categories=categories,
         selectedCategory=selectedCategory,
         items=items)
 
@@ -212,6 +213,7 @@ def showCategoryItem(category_name, item_title):
 
     items = DB_session.query(Item).filter_by(
         cat_id=selectedCategoryItem.cat_id).order_by(asc(Item.title)).all()
+
     return render_template(
         'catalog.html',
         leftPanel='category/itemlist.html',
@@ -238,8 +240,9 @@ def newCatalogItem():
                 user_id=login_session['user_id'])
             DB_session.add(newItem)
             DB_session.commit()
-            flash("{} as been successfully added to {}".format(
-                newItem.title, newItem.category.name))
+            flashmsg = "{} as been successfully added!".format(
+                newItem.title)
+            flash(flashmsg)
             return redirect(url_for(
                 'showCategoryItem',
                 category_name=newItem.category.urlname,
@@ -251,6 +254,7 @@ def newCatalogItem():
                 errormsg="Oops... Failed to create a new item.")
     else:
         # Show add category item page
+        categories = DB_session.query(Category).order_by(asc(Category.name))
         category_id = request.args.get('category_id')
         if category_id is not None:
             try:
@@ -263,14 +267,14 @@ def newCatalogItem():
                 'catalog.html',
                 leftPanel='category/categorylist.html',
                 rightPanel='category/newitem.html',
-                categories=Categories,
+                categories=categories,
                 selectedCategory=selectedCategory)
         else:
             return render_template(
                 'catalog.html',
                 leftPanel='category/categorylist.html',
                 rightPanel='category/newitem.html',
-                categories=Categories)
+                categories=categories)
 
 
 # Edit a category item
@@ -298,8 +302,9 @@ def editCategoryItem(item_title):
                 request.form['description'])
         DB_session.add(editCategoryItem)
         DB_session.commit()
-        flash("{} as been successfully updated in {}".format(
-            editCategoryItem.title, editCategoryItem.category.name))
+        flashmsg = "{} as been successfully updated!".format(
+            editCategoryItem.title)
+        flash(flashmsg)
         return redirect(url_for(
             'showCategoryItem',
             category_name=editCategoryItem.category.urlname,
@@ -339,8 +344,9 @@ def deleteCategoryItem(item_title):
         category = deleteCategoryItem.category
         DB_session.delete(deleteCategoryItem)
         DB_session.commit()
-        flash("{} as been successfully removed from {}".format(
-            deleteCategoryItem.title, deleteCategoryItem.category.name))
+        flashmsg = "{} as been successfully deleted!".format(
+            deleteCategoryItem.title)
+        flash(flashmsg)
         return redirect(url_for(
             'showCategoryItems',
             category_name=category.urlname,
@@ -364,4 +370,5 @@ if __name__ == '__main__':
 
     # Set threaded to True to serve multiple clients concurrently
     # https://stackoverflow.com/questions/14814201/can-i-serve-multiple-clients-using-just-flask-app-run-as-standalone/14823968#14823968
-    app.run(host='0.0.0.0', port=8000, threaded=True)
+    # app.run(host='0.0.0.0', port=8000, threaded=True)
+    app.run(host='0.0.0.0', port=8000)

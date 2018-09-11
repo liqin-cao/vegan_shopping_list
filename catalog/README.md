@@ -120,12 +120,11 @@ You should be able to view vegan alternative categories and items. After logging
 
 ## Known Issues
 
-* Facebook login is not suppored on Firefox Version 27.0.1
+* Facebook login is not suppored on Firefox Version 62.0. Using the sample code from [Facebook Login for the Web with the JavaScript SDK](https://developers.facebook.com/docs/facebook-login/web), the same behavior is observed.
 
 ## Release Notes
 
-* To serve multiple clients simultaneously, run Flask app with **threaded** set to true.
-* Facebook login is not available on Firefox; only Google login is suppored on Firefox.
+* Facebook login is not available on Firefox 62.0; only Google login is suppored on Firefox 62.0.
 * For thread safe access to the database, the scoped_session() is used so that a single global variable can be used to safely represent transactional database sessions with sets of objects, localized to a single request thread.  See [Contextual/Thread-local Sessions](http://docs.sqlalchemy.org/en/latest/orm/contextual.html) for more detail.
 * Modal login dialog is implemented with [Bootstrap Modal Plugin](https://www.w3schools.com/bootstrap/bootstrap_modal.asp).
 * [Requiring HTTPS for Facebook Login](https://developers.facebook.com/blog/post/2018/06/08/enforce-https-facebook-login/) will be enforced by October 6, 2018.  The application can still run with HTTP on “localhost” addresses, but only while the app is still in development mode.
@@ -136,7 +135,7 @@ You should be able to view vegan alternative categories and items. After logging
 * ubuntu-16.04
 * Google Chrome Version 68.0.3440.106
 * Microsoft Edge Version 25.10586.672.0
-* Firefox Version 27.0.1
+* Firefox Version 62.0
 
 ## Contributing
 
