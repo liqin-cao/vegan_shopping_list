@@ -87,18 +87,21 @@
                             var js, fjs = d.getElementsByTagName(s)[0];
                             if (d.getElementById(id)) return;
                             js = d.createElement(s); js.id = id;
-                            js.src = "//connect.facebook.net/en_US/sdk.js";
+                            js.src = "https://connect.facebook.net/en_US/sdk.js";
                             fjs.parentNode.insertBefore(js, fjs);
                         }(document, 'script', 'facebook-jssdk'));
 
-                        // Here we run a very simple test of the Graph API after login is
-                        // successful.  See statusChangeCallback() for when this call is made.
+                        // This function is called when someone finishes with the Login
+                        // Button.
                         function sendTokenToServer() {
+                            console.log('Sending login token to server...');
                             var access_token = FB.getAuthResponse()['accessToken'];
-                            console.log(access_token)
-                            console.log('Welcome! Fetching your information.... ');
+                            console.log('Accesss token: ' + access_token);
+
+                            // Fetch login user information
                             FB.api('/me', function (response) {
                                 $('#loader').attr('style', 'display: block');
+                                
                                 console.log('Successful login for: ' + response.name);
                                 $.ajax({
                                     type: 'POST',
