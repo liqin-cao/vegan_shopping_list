@@ -42,7 +42,25 @@
 	{% include "loginmodal.html" %}
 	<script>
 		$("#loginModal").on('show.bs.modal', function () {
-			console.log("Login Modal Open");
+			// Firefox 1.0+
+			var isFirefox = typeof InstallTrigger !== 'undefined';
+
+			// Internet Explorer 6-11
+			var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+			// Edge 20+
+			var isEdge = !isIE && !!window.StyleMedia;
+
+			// Chrome 1+
+			var isChrome = !!window.chrome && !!window.chrome.webstore;
+
+			if (isFirefox) {
+				// Facebook login does not work with Firefox
+				document.getElementById("facebookLogin").style.display = "none";
+			} else {
+				document.getElementById("facebookLogin").style.display = "block";
+			}
+			console.log("Login Modal Open: " + ' isChrome-' + isChrome + ' isEdge-' + isEdge + ' isFirefox-' + isFirefox);
 		});
 	</script>
 </div>

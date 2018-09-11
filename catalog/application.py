@@ -361,4 +361,7 @@ def deleteCategoryItem(item_title):
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
-    app.run(host='0.0.0.0', port=8000)
+
+    # Set threaded to True to serve multiple clients concurrently
+    # https://stackoverflow.com/questions/14814201/can-i-serve-multiple-clients-using-just-flask-app-run-as-standalone/14823968#14823968
+    app.run(host='0.0.0.0', port=8000, threaded=True)
