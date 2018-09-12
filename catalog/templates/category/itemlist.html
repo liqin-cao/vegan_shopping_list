@@ -29,7 +29,11 @@
             </div>
             {% else %}
             <div class="categoryitems-list">
+                {%if 'username' in session and session['user_id'] == item.user_id %}
+                <h3>{{item.title}}<span class="glyphicon glyphicon-heart-empty" style="margin-left:10px;" aria-hidden="true"></span></h3>
+                {% else %}
                 <h3>{{item.title}}</h3>
+                {% endif %}
             </div>
             {% endif %}
         </a>

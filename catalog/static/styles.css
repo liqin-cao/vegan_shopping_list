@@ -168,6 +168,11 @@ a {
 .banner h1 {
 	margin: 45px 0;
 }
+.json-img {
+	margin-left: -5px;
+	width: 40px;
+	height: 40px;
+}
 .user-img {
 	margin-right: -5px;
 	width: 50px;

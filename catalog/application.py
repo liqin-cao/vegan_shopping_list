@@ -143,10 +143,26 @@ def logout():
 
 
 @app.errorhandler(404)
-def page_not_found(e):
+def page_not_found404(e):
     return render_template(
         'error.html',
         errormsg="404 What you were looking for is just not there."), 404
+
+
+@app.errorhandler(401)
+def unauthorized401(e):
+    return render_template(
+        'error.html',
+        errormsg="""401 What you are trying to do
+            requires login credentials."""), 401
+
+
+@app.errorhandler(403)
+def forbidden403(e):
+    return render_template(
+        'error.html',
+        errormsg="""403 What you are trying to do
+            requires ownership permission."""), 403
 
 
 # Show error page
@@ -178,7 +194,7 @@ def showCategories():
 def showCategoryItems(category_name):
     category_id = request.args.get('category_id')
     if category_id is None:
-        return page_not_found(None)
+        return page_not_found404(None)
 
     items = DB_session.query(Item).filter_by(
         cat_id=category_id).order_by(asc(Item.title)).all()
@@ -186,7 +202,7 @@ def showCategoryItems(category_name):
         selectedCategory = DB_session.query(Category).filter_by(
             id=category_id).one()
     except NoResultFound:
-        return page_not_found(None)
+        return page_not_found404(None)
 
     categories = DB_session.query(Category).order_by(asc(Category.name))
     return render_template(
@@ -203,13 +219,13 @@ def showCategoryItems(category_name):
 def showCategoryItem(category_name, item_title):
     item_id = request.args.get('item_id')
     if item_id is None:
-        return page_not_found(None)
+        return page_not_found404(None)
 
     try:
         selectedCategoryItem = DB_session.query(Item).filter_by(
             id=item_id).one()
     except NoResultFound:
-        return page_not_found(None)
+        return page_not_found404(None)
 
     items = DB_session.query(Item).filter_by(
         cat_id=selectedCategoryItem.cat_id).order_by(asc(Item.title)).all()
@@ -226,9 +242,9 @@ def showCategoryItem(category_name, item_title):
 # Add a new catalog/category item
 @app.route('/catalog/new', methods=['GET', 'POST'])
 def newCatalogItem():
-    # Redirect to home page for unauthorized user.
+    # Redirect to error page for unauthorized user.
     if not authorized():
-        return redirect('/')
+        return unauthorized401(None)
 
     if request.method == 'POST':
         # Create a new category item
@@ -261,7 +277,7 @@ def newCatalogItem():
                 selectedCategory = DB_session.query(Category).filter_by(
                     id=category_id).one()
             except NoResultFound:
-                return page_not_found(None)
+                return page_not_found404(None)
 
             return render_template(
                 'catalog.html',
@@ -280,18 +296,22 @@ def newCatalogItem():
 # Edit a category item
 @app.route('/catalog/<item_title>/edit', methods=['GET', 'POST'])
 def editCategoryItem(item_title):
-    # Redirect to home page for unauthorized user.
+    # Redirect to error page for unauthorized user.
     if not authorized():
-        return redirect('/')
+        return unauthorized401(None)
 
     item_id = request.args.get('item_id')
     if item_id is None:
-        return page_not_found(None)
+        return page_not_found404(None)
 
     try:
         editCategoryItem = DB_session.query(Item).filter_by(id=item_id).one()
     except NoResultFound:
-        return page_not_found(None)
+        return page_not_found404(None)
+
+    # Redirect to error page for forbidden user.
+    if login_session['user_id'] != editCategoryItem.user_id:
+        return forbidden403(None)
 
     if request.method == 'POST':
         # Update the category item.
@@ -326,18 +346,22 @@ def editCategoryItem(item_title):
 # Delete a category item
 @app.route('/catalog/<item_title>/delete', methods=['GET', 'POST'])
 def deleteCategoryItem(item_title):
-    # Redirect to home page for unauthorized user.
+    # Redirect to error page for unauthorized user.
     if not authorized():
-        return redirect('/')
+        return unauthorized401(None)
 
     item_id = request.args.get('item_id')
     if item_id is None:
-        return page_not_found(None)
+        return page_not_found404(None)
 
     try:
         deleteCategoryItem = DB_session.query(Item).filter_by(id=item_id).one()
     except NoResultFound:
-        return page_not_found(None)
+        return page_not_found404(None)
+
+    # Redirect to error page for forbidden user.
+    if login_session['user_id'] != deleteCategoryItem.user_id:
+        return forbidden403(None)
 
     if request.method == 'POST':
         # Delete the category item

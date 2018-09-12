@@ -24,7 +24,6 @@ def gen_state_token():
 # Check to see if the user is an authorized logged in user.
 def authorized():
     if 'username' not in login_session:
-        flash("Please login to post, edit and delete your own items.")
         return False
     else:
         return True
