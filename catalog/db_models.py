@@ -49,7 +49,7 @@ class Category(Base):
     def urlname(self):
         """For constructing url path segment, remove everything except
         alphanumeric characters from category name"""
-        pattern = re.compile('[\W_]+')
+        pattern = re.compile(r'[\W_]+')
         return pattern.sub('', self.name)
 
 
@@ -81,7 +81,7 @@ class Item(Base):
     def urltitle(self):
         """For constructing url path segment, remove everything except
         alphanumeric characters from item title"""
-        pattern = re.compile('[\W_]+')
+        pattern = re.compile(r'[\W_]+')
         return pattern.sub('', self.title)
 
 

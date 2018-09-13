@@ -160,3 +160,4 @@ This project is licensed under the LC License.
 * [www.webkinzinsider.com](http://www.webkinzinsider.com/w/images/5/52/Chicken_Sad.png) for the error page image
 * [SNAPPA](https://snappa.com/) to create the app banner image
 * [United Poultry Concerns](http://upc-online.org/) for the banner background image
+* [Flask Snippets](http://flask.pocoo.org/snippets/3/) for CSRF protection of CRUD operations

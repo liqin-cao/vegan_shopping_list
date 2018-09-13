@@ -13,7 +13,7 @@
 
             <div class="modal-body">
                 <div class="login-panel">
-                    {% set STATE = gen_state_token() %}
+                    {% set CSRFToken = gen_csrf_token() %}
                     <div id="loader" class="loader" style="display:none;"></div>
                     <div id="result"></div>
 
@@ -37,7 +37,7 @@
                                 // responds, redirect back to the main catalog page.
                                 $.ajax({
                                     type: 'POST',
-                                    url: '/gconnect?state={{STATE}}',
+                                    url: '/gconnect?_csrf_token={{CSRFToken}}',
                                     processData: false,
                                     contentType: 'application/octet-stream; charset=utf-8',
                                     data: authResult['code'],
@@ -105,7 +105,7 @@
                                 console.log('Successful login for: ' + response.name);
                                 $.ajax({
                                     type: 'POST',
-                                    url: '/fbconnect?state={{STATE}}',
+                                    url: '/fbconnect?_csrf_token={{CSRFToken}}',
                                     processData: false,
                                     data: access_token,
                                     contentType: 'application/octet-stream; charset=utf-8',
