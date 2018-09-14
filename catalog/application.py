@@ -13,13 +13,15 @@ from db_models import Base, Category, Item, User
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 
+from functools import wraps
+
 import random
 import string
 import httplib2
 import json
 import bleach
 
-from oauth_utils import authorized
+from oauth_utils import authenticated
 from oauth_utils import google_connect, facebook_connect, disconnect
 
 app = Flask(__name__)
@@ -90,6 +92,21 @@ def gen_csrf_token():
 app.jinja_env.globals.update(gen_csrf_token=gen_csrf_token)
 
 
+# Define function decorator to require login on restricted
+# operations.
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # Redirect to error page for unauthorized user.
+        if authenticated():
+            # Continue with the decorated function
+            return f(*args, **kwargs)
+        else:
+            return unauthorized401(None)
+
+    return decorated_function
+
+
 @app.teardown_request
 def remove_session(exception=None):
     # http://docs.sqlalchemy.org/en/rel_1_0/orm/contextual.html#using-thread-local-scope-with-web-applications
@@ -151,6 +168,40 @@ def catalogJSON():
         categoriesJSON.append(categoryJSON)
 
     return jsonify(Category=categoriesJSON)
+
+
+# JSON API to view all catalog items in a category
+@app.route('/<category_id>/category.json')
+def categoryJSON(category_id):
+    '''Retrieve all the items in a category from database and
+       return it as a single json object.'''
+    try:
+        category = DB_session.query(Category).filter_by(
+            id=category_id).one()
+    except NoResultFound:
+        return page_not_found404(None)
+
+    items = DB_session.query(Item).filter_by(
+        cat_id=category_id).order_by(asc(Item.title)).all()
+
+    categoryJSON = category.serialize
+    categoryJSON['Item'] = [item.serialize for item in items]
+
+    return jsonify(Category=categoryJSON)
+
+
+# JSON API to view a specific catalog item
+@app.route('/<item_id>/item.json')
+def itemJSON(item_id):
+    '''Retrieve the catalog item from database and
+       return it as a single json object.'''
+    try:
+        item = DB_session.query(Item).filter_by(
+            id=item_id).one()
+    except NoResultFound:
+        return page_not_found404(None)
+
+    return jsonify(Item=item.serialize)
 
 
 # Login with Google oauth api
@@ -281,11 +332,8 @@ def showCategoryItem(category_name, item_title):
 
 # Add a new catalog/category item
 @app.route('/catalog/new', methods=['GET', 'POST'])
+@login_required
 def newCatalogItem():
-    # Redirect to error page for unauthorized user.
-    if not authorized():
-        return unauthorized401(None)
-
     if request.method == 'POST':
         # Create a new category item
         if request.form['title']:
@@ -335,11 +383,8 @@ def newCatalogItem():
 
 # Edit a category item
 @app.route('/catalog/<item_title>/edit', methods=['GET', 'POST'])
+@login_required
 def editCategoryItem(item_title):
-    # Redirect to error page for unauthorized user.
-    if not authorized():
-        return unauthorized401(None)
-
     item_id = request.args.get('item_id')
     if item_id is None:
         return page_not_found404(None)
@@ -385,11 +430,8 @@ def editCategoryItem(item_title):
 
 # Delete a category item
 @app.route('/catalog/<item_title>/delete', methods=['GET', 'POST'])
+@login_required
 def deleteCategoryItem(item_title):
-    # Redirect to error page for unauthorized user.
-    if not authorized():
-        return unauthorized401(None)
-
     item_id = request.args.get('item_id')
     if item_id is None:
         return page_not_found404(None)

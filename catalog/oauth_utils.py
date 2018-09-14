@@ -13,7 +13,7 @@ import string
 
 
 # Check to see if the user is an authorized logged in user.
-def authorized():
+def authenticated():
     if 'username' not in login_session:
         return False
     else:
